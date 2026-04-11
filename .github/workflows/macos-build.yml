@@ -1,0 +1,37 @@
+name: macOS Build
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.13
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - name: Verify project structure
+      run: |
+        echo "=== Project structure ==="
+        ls -la
+        python --version
+
+    - name: Run build_mac.sh
+      run: |
+        chmod +x build_mac.sh
+        VERSION=2.0.1 bash build_mac.sh
+
+    - name: Upload macOS app
+      uses: actions/upload-artifact@v4
+      with:
+        name: ProfesorAbelton-macOS-v2.0.1
+        path: release/ProfesorAbelton_macOS_v2.0.1.zip
+        retention-days: 30
